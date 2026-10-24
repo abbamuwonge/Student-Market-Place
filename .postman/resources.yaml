@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: 07c46fb0-1ca7-4388-8092-53c8f1b9773b
+
+localResources:
+  collections:
+    - ../backend/postman/CampusMart.postman_collection.json
+
+cloudResources:
+  collections:
+    ../postman/collections/CampusMart API: 055aabf9-b11e-45fa-95a3-0d2cbdaeeff0

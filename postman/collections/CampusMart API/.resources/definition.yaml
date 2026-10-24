@@ -1,0 +1,72 @@
+$kind: collection
+description: |-
+  Test collection for the CampusMart backend (FastAPI).
+
+  1. Start the API: uvicorn app.main:app --reload
+  2. Import this file into Postman.
+  3. Check the collection variables (baseUrl, adminEmail, adminPassword).
+  4. Run the whole collection with the Collection Runner, in order. It registers two fresh users, runs every endpoint with positive and negative cases, and deletes the test users at the end.
+
+  Command line: newman run CampusMart.postman_collection.json
+variables:
+  - key: baseUrl
+    value: http://127.0.0.1:8000
+    disabled: false
+    secret: false
+  - key: adminEmail
+    value: admin@campusmart.ug
+    disabled: false
+    secret: false
+  - key: adminPassword
+    value: Admin12345
+    disabled: false
+    secret: false
+  - key: auth_secret_0k4s
+    secret: true
+    disabled: false
+  - key: sellerEmail
+    value: ""
+    disabled: false
+  - key: sellerId
+    value: ""
+    disabled: false
+  - key: buyerEmail
+    value: ""
+    disabled: false
+  - key: buyerId
+    value: ""
+    disabled: false
+  - key: sellerToken
+    value: ""
+    disabled: false
+  - key: buyerToken
+    value: ""
+    disabled: false
+  - key: adminToken
+    value: ""
+    disabled: false
+  - key: categoryId
+    value: ""
+    disabled: false
+  - key: newCategoryId
+    value: ""
+    disabled: false
+  - key: itemId
+    value: ""
+    disabled: false
+  - key: orderId
+    value: ""
+    disabled: false
+  - key: itemId2
+    value: ""
+    disabled: false
+  - key: orderId2
+    value: ""
+    disabled: false
+  - key: itemId3
+    value: ""
+    disabled: false
+scripts:
+  - type: http:afterResponse
+    code: pm.test("Response time is under 3 seconds", function () { pm.expect(pm.response.responseTime).to.be.below(3000); });
+    language: text/javascript

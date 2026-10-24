@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/users/me"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "full_name": "Postman Seller",
+      "phone": "12345",
+      "campus": "Kyambogo"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{sellerToken}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("Status is 400", function () { pm.response.to.have.status(400); });
+    language: text/javascript
+order: 2000

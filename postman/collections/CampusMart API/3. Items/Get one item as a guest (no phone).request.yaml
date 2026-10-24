@@ -1,0 +1,14 @@
+$kind: http-request
+description: NFR5
+url: "{{baseUrl}}/items/{{itemId}}"
+method: GET
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status is 200", function () { pm.response.to.have.status(200); });
+      pm.test("Has category and seller", function () { const json = pm.response.json(); pm.expect(json.category.name).to.be.a("string"); pm.expect(json.seller.full_name).to.be.a("string"); });
+      pm.test("Seller phone is hidden from guests", function () { const json = pm.response.json(); pm.expect(json.seller.phone).to.be.null; });
+    language: text/javascript
+order: 12000

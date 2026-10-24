@@ -1,0 +1,16 @@
+$kind: http-request
+description: FR13
+url: "{{baseUrl}}/items?min_price=10000&max_price=20000"
+method: GET
+queryParams:
+  min_price: "10000"
+  max_price: "20000"
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status is 200", function () { pm.response.to.have.status(200); });
+      pm.test("All prices are inside the range", function () { const json = pm.response.json(); json.forEach(i => pm.expect(i.price).to.be.within(10000, 20000)); });
+    language: text/javascript
+order: 8000

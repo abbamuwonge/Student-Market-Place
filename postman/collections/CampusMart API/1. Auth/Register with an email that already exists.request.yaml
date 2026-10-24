@@ -1,0 +1,25 @@
+$kind: http-request
+description: FR2
+url: "{{baseUrl}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "full_name": "Duplicate User",
+      "email": "{{sellerEmail}}",
+      "phone": "0771234567",
+      "campus": "Makerere",
+      "password": "password123"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status is 400", function () { pm.response.to.have.status(400); });
+      pm.test("Says the email is taken", function () { const json = pm.response.json(); pm.expect(json.detail).to.include("already registered"); });
+    language: text/javascript
+order: 3000

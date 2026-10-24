@@ -1,0 +1,25 @@
+$kind: http-request
+description: FR25
+url: "{{baseUrl}}/messages"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "receiver_id": {{sellerId}},
+      "item_id": {{itemId}},
+      "body": "Is it still available?"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{buyerToken}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status is 201", function () { pm.response.to.have.status(201); });
+      pm.test("Message saved unread", function () { const json = pm.response.json(); pm.expect(json.is_read).to.eql(false); pm.expect(json.body).to.eql("Is it still available?"); });
+    language: text/javascript
+order: 1000

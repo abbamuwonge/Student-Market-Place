@@ -1,0 +1,18 @@
+$kind: http-request
+description: FR20
+url: "{{baseUrl}}/favorites"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: '{ "item_id": {{itemId}} }'
+auth:
+  type: bearer
+  credentials:
+    token: "{{buyerToken}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("Status is 201", function () { pm.response.to.have.status(201); });
+    language: text/javascript
+order: 1000

@@ -1,0 +1,25 @@
+$kind: http-request
+description: FR7
+url: "{{baseUrl}}/users/me"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "full_name": "Postman Seller Updated",
+      "phone": "256700111222",
+      "campus": "Kyambogo University"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{sellerToken}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status is 200", function () { pm.response.to.have.status(200); });
+      pm.test("Saved", function () { const json = pm.response.json(); pm.expect(json.campus).to.eql("Kyambogo University"); });
+    language: text/javascript
+order: 1000

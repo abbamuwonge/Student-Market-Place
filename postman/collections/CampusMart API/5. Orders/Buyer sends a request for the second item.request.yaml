@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/orders"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: '{ "item_id": {{itemId2}} }'
+auth:
+  type: bearer
+  credentials:
+    token: "{{buyerToken}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status is 201", function () { pm.response.to.have.status(201); });
+      pm.collectionVariables.set("orderId2", pm.response.json().order_id);
+    language: text/javascript
+order: 15000

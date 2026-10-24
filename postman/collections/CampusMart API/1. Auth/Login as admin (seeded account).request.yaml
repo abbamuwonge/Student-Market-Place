@@ -1,0 +1,23 @@
+$kind: http-request
+description: Change the adminEmail and adminPassword collection variables if you changed them in the backend settings.
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "{{adminEmail}}",
+      "password": "{{adminPassword}}"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status is 200", function () { pm.response.to.have.status(200); });
+      pm.test("User is an admin", function () { const json = pm.response.json(); pm.expect(json.user.role).to.eql("admin"); });
+      pm.collectionVariables.set("adminToken", pm.response.json().access_token);
+    language: text/javascript
+order: 8000
