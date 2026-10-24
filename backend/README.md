@@ -95,13 +95,52 @@ Status codes: 200 OK, 201 Created, **400** invalid input (the app's validation e
 - Buyer and seller see each other's phone number only after the request is accepted.
 - Every user sees only their own favourites, orders and messages.
 
-## Run the tests
+## Testing (analyst role)
+
+Three checks, from fastest to most complete.
+
+### 1. Database check: does the real database match the ERD?
+
+```bash
+python check_database.py          # PASS or FAIL for every table
+python check_database.py --show   # also prints each real table column by column, for the demo
+```
+
+Start the API once first so the database exists. The script compares `campusmart.db` with the ERD and
+data dictionary in the design document: tables, columns, types, NOT NULL, primary keys, foreign keys and
+unique fields. It also checks the data: no orphan rows, passwords stored as bcrypt hashes, no duplicate
+emails, no order for the buyer's own item, no message to oneself, no item price of 0 or less.
+It exits with code 1 when something does not match, so it also works in a script.
+
+If the ERD changes, update `SPEC` at the top of `check_database.py` together with `app/models.py`.
+
+### 2. Automated tests (pytest)
 
 ```bash
 pytest
 ```
 
-The tests use a temporary database, so your real data is not touched.
+The tests use a temporary database, so your real data is not touched. They cover login rules, 400 and 401
+responses, ownership (403), search and filters, favourites, the order life cycle, messages, admin rules
+and account deletion, and they run the database check as well.
+
+### 3. Postman collection: the whole API
+
+File: `postman/CampusMart.postman_collection.json` (79 requests, positive and negative cases, each with tests).
+
+1. Start the API (`uvicorn app.main:app --reload`).
+2. In Postman choose **Import** and pick the file.
+3. Open the collection, check the variables `baseUrl`, `adminEmail` and `adminPassword`.
+4. Click **Run** (Collection Runner) and run all requests in order. It registers two fresh users, saves their
+   tokens and ids in variables, runs every endpoint, and deletes the test users at the end.
+5. Expected result: every test passes. The only request that needs you is
+   **Upload photo**: pick a real JPG or PNG in its Body tab. Without a file it correctly returns 400, and the
+   collection accepts that.
+
+Command line (needs Node.js): `npx newman run postman/CampusMart.postman_collection.json`
+
+Each request's description names the requirement it checks (FR1, NFR5, and so on) so the results can be
+copied into the testing part of the report.
 
 ## Project layout
 
@@ -118,7 +157,9 @@ backend/
     files.py         photo saving and deleting
     seed.py          categories and admin account
     routers/         auth, users, categories, items, favorites, orders, messages
-  tests/             pytest tests
+  tests/             pytest tests (including the database check)
+  postman/           Postman collection for the whole API
+  check_database.py  compares the real database with the ERD
   uploads/           saved photos (not committed)
   requirements.txt
 ```
